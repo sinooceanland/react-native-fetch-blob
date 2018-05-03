@@ -22,6 +22,8 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okio.BufferedSink;
 
+import static com.RNFetchBlob.RNFetchBlobFS.deleteFile;
+
 class RNFetchBlobBody extends RequestBody{
 
     private InputStream requestStream;
@@ -126,7 +128,7 @@ class RNFetchBlobBody extends RequestBody{
     boolean clearRequestBody() {
         try {
             if (bodyCache != null && bodyCache.exists()) {
-                bodyCache.delete();
+                deleteFile(bodyCache);
             }
         } catch(Exception e) {
             RNFetchBlobUtils.emitWarningEvent(e.getLocalizedMessage());
