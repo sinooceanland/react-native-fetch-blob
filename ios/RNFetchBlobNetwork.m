@@ -48,11 +48,17 @@ static void initialize_tables() {
 - (id)init {
     self = [super init];
     if (self) {
-        self.requestsTable = [NSMapTable mapTableWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory];
+        @synchronized ([RNFetchBlobNetwork class]) {
+            if (self.requestsTable == nil) {
+                self.requestsTable = [NSMapTable mapTableWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory];
+            }
+            if (self.taskQueue == nil) {
+                self.taskQueue = [[NSOperationQueue alloc] init];
+                self.taskQueue.qualityOfService = NSQualityOfServiceUtility;
+                self.taskQueue.maxConcurrentOperationCount = 10;
+            }
+        }
         
-        self.taskQueue = [[NSOperationQueue alloc] init];
-        self.taskQueue.qualityOfService = NSQualityOfServiceUtility;
-        self.taskQueue.maxConcurrentOperationCount = 10;
     }
     
     return self;
